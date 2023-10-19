@@ -1,17 +1,16 @@
 #include "monty.h"
+#include <stdio.h>
 
 /**
- * pall - Implements the pall opcode.
- * @stack: A pointer to the top of the stack.
- * @line_number: The line number in the Monty byte code file.
- *
- * Description: This function prints all values on the stack.
+ * pall - Implementation of pall opcode
+ * @stack: Double pointer to the head of the stack
+ * @line_number: Line number in the file
  */
 void pall(stack_t **stack, unsigned int line_number)
 {
 	stack_t *current = *stack;
-
-	(void)line_number;
+	/* Implementation of pall opcode */
+	(void)line_number;  /* Unused parameter */
 
 	while (current)
 	{

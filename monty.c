@@ -1,54 +1,39 @@
-#define _GNU_SOURCE
+#define _POSIX_C_SOURCE 200809L
+#include "monty.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include "monty.h"
 
-ssize_t getline(char **lineptr, size_t *n, FILE *stream);
-
-void execute_file(const char *filename);
-
-/**
- * main - Entry point of the Monty interpreter
- * @argc: Number of command-line arguments
- * @argv: Array of command-line arguments
- * Return: Always 0 (success)
- */
 int main(int argc, char *argv[])
 {
+	FILE *file = fopen(argv[1], "r");
+	stack_t *stack = NULL;
+	char *line = NULL;
+	size_t len = 0;
+	ssize_t read;
+
 	if (argc != 2)
 	{
 		fprintf(stderr, "USAGE: monty file\n");
 		exit(EXIT_FAILURE);
 	}
 
-	execute_file(argv[1]);
-
-	return (0);
-}
-
-/**
- * execute_file - Reads and executes Monty bytecodes from a file
- * @filename: Name of the file containing Monty bytecodes
- */
-void execute_file(const char *filename)
-{
-	FILE *file = fopen(filename, "r");
-	char *line = NULL;
-	size_t len = 0;
-	unsigned int line_number = 0;
-
 	if (!file)
 	{
-		fprintf(stderr, "Error: Can't open file %s\n", filename);
+		fprintf(stderr, "Error: Can't open file %s\n", argv[1]);
 		exit(EXIT_FAILURE);
 	}
 
-	while (getline(&line, &len, file) != -1)
+	while ((read = getline(&line, &len, file) != -1))
 	{
-		line_number++; /* Implement opcode execution based on the line content */
+		if (!process_line(line, &stack))
+		{
+			fprintf(stderr, "Error: Invalid instruction on line %u\n", get_line_number(line));
+			free_resources(file, line, stack);
+			exit(EXIT_FAILURE);
+		}
 	}
 
-	free(line);
-	fclose(file);
+	free_resources(file, line, stack);
+	exit(EXIT_SUCCESS);
 }
 

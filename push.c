@@ -1,14 +1,14 @@
 #include "monty.h"
+#include <stdio.h>
 
 /**
- * push - Implements the push opcode.
- * @stack: A pointer to the top of the stack.
- * @value: The value to be pushed onto the stack.
- *
+ * push - Implementation of push opcode
+ * @stack: Double pointer to the head of the stack
+ * @value: Value to be pushed onto the stack
  */
-
 void push(stack_t **stack, int value)
 {
+	/* Implementation of push opcode */
 	stack_t *new_node = malloc(sizeof(stack_t));
 
 	if (!new_node)
