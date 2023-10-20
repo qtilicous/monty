@@ -102,10 +102,9 @@ int process_line(stack_t **stack, char *line)
 			int error_occurred = 0;
 
 			instruction->f(stack, get_line_number(line));
-			
-			if (error_occurred)
+
+			if (error_occurred != 0)
 			{
-				error_occurred = 1;
 				fprintf(stderr, "An error occurred while executing the instruction '%s'\n", opcode);
 			}
 
