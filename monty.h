@@ -28,10 +28,10 @@ void pop(stack_t **stack, unsigned int line_number);
 void swap(stack_t **stack, unsigned int line_number);
 void add(stack_t **stack, unsigned int line_number);
 void nop(stack_t **stack, unsigned int line_number);
-int process_line(char *line, stack_t **stack);
+int process_line(stack_t **stack, char *line);
 void free_resources(FILE *file, char *line, stack_t *stack);
-instruction_t *get_instruction(char *opcode);
-unsigned int get_line_number(char *line);
+instruction_t *get_instruction(const char *opcode);
+int get_line_number(char *line);
 void free_stack(stack_t **stack);
 
 #endif /* MONTY_H */

@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
 
 	while ((read = getline(&line, &len, file) != -1))
 	{
-		if (!process_line(line, &stack))
+		if (!process_line(&stack, line))
 		{
 			fprintf(stderr, "Error: Invalid instruction on line %u\n", get_line_number(line));
 			free_resources(file, line, stack);

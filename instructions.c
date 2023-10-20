@@ -1,41 +1,12 @@
 #include "monty.h"
 #include <string.h>
 #include <stdio.h>
-#include <linux/kernel.h>
+#include <stdlib.h>
 
-int process_line(char *line, stack_t **stack);
+instruction_t push_instruction;
+instruction_t pall_instruction;
+int process_line(stack_t **stack, char *line);
 void free_resources(FILE *file, char *line, stack_t *stack);
-
-/**
- * process_line - Process a line of Monty bytecode.
- * @line: The line of Monty bytecode to process.
- * @stack: A pointer to the stack.
- *
- * Return: 0 on success, -1 on failure.
- */
-int process_line(char *line, stack_t **stack)
-{
-	const char *opcode;
-	char *argument;
-
-	instruction_t *instruction = get_instruction(opcode);
-
-	opcode = strtok(line, " \t\n");
-	argument = strtok(NULL, " \t\n");
-
-	if (!opcode)
-		return (1);
-
-	if (!instruction)
-		return (0);
-
-	if (argument)
-		instruction->f(stack, get_line_number(line), atoi(argument));
-	else
-		instruction->f(stack, get_line_number(line));
-
-	return (1);
-}
 
 /**
  * free_resources - Free resources used in Monty interpreter.
@@ -47,7 +18,7 @@ void free_resources(FILE *file, char *line, stack_t *stack)
 {
 	free(line);
 	fclose(file);
-	free_stack(stack);
+	free_stack(&stack);
 }
 
 /**
@@ -55,39 +26,39 @@ void free_resources(FILE *file, char *line, stack_t *stack)
  * @opcode: The opcode to search for.
  * Return: NULL
  */
-instruction_t *get_instruction(char *opcode)
+instruction_t *get_instruction(const char *opcode)
 {
 	if (strcmp(opcode, "push") == 0)
 	{
-		return (&push_function);
+		return (&push_instruction);
 	}
 	else if (strcmp(opcode, "pall") == 0)
 	{
-		return (&pall_function);
+		return (&pall_instruction);
 	}
-	else
-	{
-		return (NULL);
-	}
+
+	return (NULL);
 }
 
 /**
  * get_line_number - get the line number
  * @line: the line to get number
- * Return: 0
+ * Return: void
  */
-unsigned int get_line_number(char *line)
+int get_line_number(char *line)
 {
 	unsigned int line_number;
 
-	if (kstrtouint(line, 10, &line_number) == 0)
+	char *endptr;
+
+	line_number = strtoul(line, &endptr, 10);
+
+	if (*endptr != '\0')
 	{
 		return (line_number);
 	}
-	else if
-	{
-		return (0);
-	}
+
+	return (-1);
 }
 
 /**
@@ -108,3 +79,44 @@ void free_stack(stack_t **stack)
 
 	*stack = NULL;
 }
+
+/**
+ * process_line - Process a line of Monty bytecode.
+ * @line: The line of Monty bytecode to process.
+ * @stack: A pointer to the stack.
+ *
+ * Return: 0 on success, -1 on failure.
+ */
+int process_line(stack_t **stack, char *line)
+{
+	const char *opcode = strtok(line, " \t\n");
+
+	instruction_t *instruction;
+
+	if (opcode != NULL)
+	{
+		instruction = get_instruction(opcode);
+
+		if (instruction != NULL)
+		{
+			int error_occurred = 0;
+
+			instruction->f(stack, get_line_number(line));
+			
+			if (error_occurred)
+			{
+				error_occurred = 1;
+				fprintf(stderr, "An error occurred while executing the instruction '%s'\n", opcode);
+			}
+
+			return (error_occurred);
+		}
+		else
+		{
+			fprintf(stderr, "Error: Unknown instruction '%s'\n", opcode);
+		}
+	}
+
+	return (0);
+}
+
