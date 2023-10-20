@@ -6,24 +6,32 @@
  * @stack: Double pointer to the head of the stack
  * @value: Value to be pushed onto the stack
  */
-void push(stack_t **stack, int value)
+void push_instruction(stack_t **stack, unsigned int line_number)
 {
-	/* Implementation of push opcode */
-	stack_t *new_node = malloc(sizeof(stack_t));
+	char *arg = strtok(NULL, " \t\n");
 
-	if (!new_node)
+	if (arg == NULL || !is_valid_integer(arg))
+	{
+		fprintf(stderr, "L%d: usage: push integer\n", line_number);
+		exit(EXIT_FAILURE);
+	}
+
+	int value = atoi(arg);
+	stack_t *new_node = create_stack_node(value);
+
+	if (new_node == NULL)
 	{
 		fprintf(stderr, "Error: malloc failed\n");
 		exit(EXIT_FAILURE);
 	}
 
-	new_node->n = value;
-	new_node->prev = NULL;
 	new_node->next = *stack;
+	new_node->prev = NULL;
 
-	if (*stack)
+	if (*stack != NULL)
+	{
 		(*stack)->prev = new_node;
-
+	}
 	*stack = new_node;
 }
 
