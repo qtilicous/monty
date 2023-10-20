@@ -5,7 +5,17 @@
 #include <stdio.h>
 #include <string.h>
 
-/* Data structure for stack */
+#define MAX_LINE_LENGTH 1024
+
+/**
+ * struct stack_s - doubly linked list representation of a stack (or queue)
+ * @n: integer
+ * @prev: points to the previous element of the stack (or queue)
+ * @next: points to the next element of the stack (or queue)
+ *
+ * Description: doubly linked list node structure
+ * for stack, queues, LIFO, FIFO
+ */
 typedef struct stack_s
 {
 	int n;
@@ -13,7 +23,14 @@ typedef struct stack_s
 	struct stack_s *next;
 } stack_t;
 
-/* Data structure for instruction */
+/**
+ * struct instruction_s - opcode and its function
+ * @opcode: the opcode
+ * @f: function to handle the opcode
+ *
+ * Description: opcode and its function
+ * for stack, queues, LIFO, FIFO
+ */
 typedef struct instruction_s
 {
 	char *opcode;
@@ -28,7 +45,7 @@ void pop(stack_t **stack, unsigned int line_number);
 void swap(stack_t **stack, unsigned int line_number);
 void add(stack_t **stack, unsigned int line_number);
 void nop(stack_t **stack, unsigned int line_number);
-int process_line(stack_t **stack, char *line);
+void process_line(const char *filename);
 void free_resources(FILE *file, char *line, stack_t *stack);
 instruction_t *get_instruction(const char *opcode);
 int get_line_number(char *line);

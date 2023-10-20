@@ -5,7 +5,7 @@
 
 instruction_t push_instruction;
 instruction_t pall_instruction;
-int process_line(stack_t **stack, char *line);
+void process_line(const char *filename);
 void free_resources(FILE *file, char *line, stack_t *stack);
 
 /**
@@ -82,40 +82,30 @@ void free_stack(stack_t **stack)
 
 /**
  * process_line - Process a line of Monty bytecode.
- * @line: The line of Monty bytecode to process.
- * @stack: A pointer to the stack.
- *
- * Return: 0 on success, -1 on failure.
+ * @filename: the file name
  */
-int process_line(stack_t **stack, char *line)
+void process_line(const char *filename)
 {
-	const char *opcode = strtok(line, " \t\n");
+	stack_t *new_stack = NULL;
 
-	instruction_t *instruction;
+	char line[MAX_LINE_LENGTH];
+	unsigned int line_number = 0;
 
-	if (opcode != NULL)
+	FILE *file = fopen(filename, "r");
+
+	if (file == NULL)
 	{
-		instruction = get_instruction(opcode);
-
-		if (instruction != NULL)
-		{
-			int error_occurred = 0;
-
-			instruction->f(stack, get_line_number(line));
-
-			if (error_occurred != 0)
-			{
-				fprintf(stderr, "An error occurred while executing the instruction '%s'\n", opcode);
-			}
-
-			return (error_occurred);
-		}
-		else
-		{
-			fprintf(stderr, "Error: Unknown instruction '%s'\n", opcode);
-		}
+		fprintf(stderr, "Error: Can't open file %s\n", filename);
+		exit(EXIT_FAILURE);
 	}
 
-	return (0);
+	while (fgets(line, sizeof(line), file) != NULL)
+	{
+		line_number++;
+	}
+
+	free_stack(&new_stack);
+
+	fclose(file);
 }
 

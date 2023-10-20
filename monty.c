@@ -3,37 +3,27 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "monty.h"
+
+/**
+ * main - Entry point of the Monty interpreter
+ * @argc: The number of command-line arguments
+ * @argv: An array of command-line argument strings
+ *
+ * Return: 0 on success, 1 on failure
+ */
 int main(int argc, char *argv[])
 {
-	FILE *file = fopen(argv[1], "r");
-	stack_t *stack = NULL;
-	char *line = NULL;
-	size_t len = 0;
-	ssize_t read;
+	const char *filename = argv[1];
 
 	if (argc != 2)
 	{
 		fprintf(stderr, "USAGE: monty file\n");
-		exit(EXIT_FAILURE);
+		return (EXIT_FAILURE);
 	}
 
-	if (!file)
-	{
-		fprintf(stderr, "Error: Can't open file %s\n", argv[1]);
-		exit(EXIT_FAILURE);
-	}
+	process_line(filename);
 
-	while ((read = getline(&line, &len, file) != -1))
-	{
-		if (!process_line(&stack, line))
-		{
-			fprintf(stderr, "Error: Invalid instruction on line %u\n", get_line_number(line));
-			free_resources(file, line, stack);
-			exit(EXIT_FAILURE);
-		}
-	}
-
-	free_resources(file, line, stack);
-	exit(EXIT_SUCCESS);
+	return (EXIT_SUCCESS);
 }
 

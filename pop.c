@@ -9,7 +9,7 @@
 void pop(stack_t **stack, unsigned int line_number)
 {
 	stack_t *temp = *stack;
-        *stack = (*stack)->next;
+	*stack = (*stack)->next;
 	/* Implementation of pop opcode */
 	if (!stack || !*stack)
 	{
