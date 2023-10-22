@@ -38,7 +38,7 @@ typedef struct instruction_s
 } instruction_t;
 
 /* Function prototypes */
-void push(stack_t **stack, int value);
+void push(stack_t **stack, unsigned int line_number, const char *arg);
 void pall(stack_t **stack, unsigned int line_number);
 void pint(stack_t **stack, unsigned int line_number);
 void pop(stack_t **stack, unsigned int line_number);
@@ -50,6 +50,9 @@ void free_resources(FILE *file, char *line, stack_t *stack);
 instruction_t *get_instruction(const char *opcode);
 int get_line_number(char *line);
 void free_stack(stack_t **stack);
+int is_valid_integer(const char *str);
+stack_t *create_stack_node(int n);
+
 
 #endif /* MONTY_H */
 
