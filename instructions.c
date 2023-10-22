@@ -17,8 +17,16 @@ void free_resources(FILE *file, char *line, stack_t *stack);
 void free_resources(FILE *file, char *line, stack_t *stack)
 {
 	free(line);
-	fclose(file);
-	free_stack(&stack);
+
+	if (file != NULL)
+	{
+		fclose(file);
+	}
+
+	if (stack != NULL)
+	{
+		free_stack(&stack);
+	}
 }
 
 /**
